@@ -3,10 +3,18 @@
 var cnvs = document.getElementById("c");
 var ctx = cnvs.getContext('2d');
 
+var snakeUpImg = document.getElementById("snake-up-img");
+var snakeDownImg = document.getElementById("snake-down-img");
+var snakeLeftImg = document.getElementById("snake-left-img");
+var snakeRightImg = document.getElementById("snake-right-img");
+var headImg = snakeUpImg;
+
 var playGame = true;
 var foodPresent = false;
 var gridSize = 32;
 var points = 0;
+var gameSpeed = 300;
+var headAngle = 180;
 
 var bgColor = "rgb(255,255,255)";
 
@@ -17,18 +25,18 @@ function setup(){
   putFood();
   cnvs.width = 640;
   cnvs.height = 640;
-  setPos(snake, 6, 6);
+  setPos(snake, 10, 10);
   render();
-  setInterval(update, 100);
+  setInterval(update, gameSpeed);
 
 }
 
 function keyListener(){
   window.addEventListener('keydown', function (e) {
-      if(e.keyCode == 37 && playGame){changeDir('left');} //left
-      else if(e.keyCode == 38 && playGame){changeDir('up');} //up
-      else if(e.keyCode == 39 && playGame){changeDir('right');} //right
-      else if(e.keyCode == 40 && playGame){changeDir('down');} //down
+      if(e.keyCode == 37 && snake.facing != 'right' && playGame){changeDir('left');} //left
+      else if(e.keyCode == 38 && snake.facing != 'down' && playGame){changeDir('up');} //up
+      else if(e.keyCode == 39 && snake.facing != 'left' && playGame){changeDir('right');} //right
+      else if(e.keyCode == 40 && snake.facing != 'up' && playGame){changeDir('down');} //down
       else if(e.keyCode == 32 && !playGame){restart();} //restart game
   })
 }
@@ -45,15 +53,18 @@ function render(){
   ctx.fillRect(0,0,cnvs.width, cnvs.height);
   ctx.fillStyle = food.color;
   ctx.fillRect(food.x, food.y, gridSize, gridSize);
-  ctx.fillStyle = snake.color;
-  ctx.fillRect(snake.x, snake.y, gridSize, gridSize);
+  // ctx.fillStyle = snake.color;
+  // ctx.fillRect(snake.x, snake.y, gridSize, gridSize);
+  ctx.drawImage(headImg, snake.x, snake.y, gridSize, gridSize);
+
 
   renderGrids();
 }
 
 function restart(){
   playGame = true;
-  setPos(snake, 6, 6);
+  setPos(snake, 10, 10);
+  changeDir('up');
   render();
 }
 
@@ -96,4 +107,16 @@ function move(){
 
 function changeDir(face){
   snake.facing = face;
+  if(snake.facing == "left"){
+    headImg = snakeLeftImg;
+  }// left
+  else if(snake.facing == "up"){
+    headImg = snakeUpImg;
+  }// up
+  else if(snake.facing == "right"){
+    headImg = snakeRightImg;
+  }// right
+  else if(snake.facing == "down"){
+    headImg = snakeDownImg;
+  }//down
 }
