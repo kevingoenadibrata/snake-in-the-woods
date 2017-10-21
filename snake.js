@@ -1,5 +1,7 @@
 //Snake Object
 var snake = new Snake();
+var oldSnakeXID;
+var oldSnakeYID;
 function Snake(){
   //position
   this.x = 0;
@@ -30,5 +32,13 @@ function SnakeBody(xID, yID){
 
 //edit after defining grid ! TODO
 function addBody(snake){
-  snake.snakeBody.push(new SnakeBody());
+  snake.snakeBody.push(new SnakeBody(oldSnakeXID, oldSnakeYID));
+}
+
+
+function renderSnakeBody(){
+  for(var i; i < snake.snakeBody.length ; i++){
+    ctx.fillStyle = snake.color;
+    ctx.fillRect(snake.snakeBody.x, snake.snakeBody.y, gridSize, gridSize);
+  }
 }

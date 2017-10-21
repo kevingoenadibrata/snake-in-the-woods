@@ -46,6 +46,7 @@ function render(){
   ctx.fillRect(food.x, food.y, gridSize, gridSize);
   ctx.fillStyle = snake.color;
   ctx.fillRect(snake.x, snake.y, gridSize, gridSize);
+  renderSnakeBody();
 
   renderGrids();
 }
@@ -66,6 +67,8 @@ function update(){
 }
 //direction
 function move(){
+  oldSnakeXID = snake.x;
+  oldSnakeYID = snake.y;
   if(snake.facing == "left" && snake.xID - 1 >= 0 && playGame){
     setPos(snake, snake.xID-1, snake.yID);
     snake.facing = "left";

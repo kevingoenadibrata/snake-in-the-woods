@@ -1,3 +1,4 @@
+//grids
 var grids = [];
 var gridCount = 20;
 
