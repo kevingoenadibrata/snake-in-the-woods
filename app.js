@@ -35,6 +35,7 @@ var playGame = true;
 var moveCoin = false;
 
 function start(){
+  console.log(snake);
   cnvs.width = 1000;
   cnvs.height = 750;
   checkCookie();

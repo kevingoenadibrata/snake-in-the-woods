@@ -13,12 +13,14 @@ body{
   height:100vh;
   background-color: rgb(55, 66, 77);
   text-align: center;
-  overflow: hidden; 
+  overflow: hidden;
 }
-
+#points{
+  position: absolute;
+}
 canvas{
-  width:1000px;
-  height:750px;
+  width:640px;
+  height:640px;
   background-color: white;
   border: solid 5px rgb(68, 125, 135);
   position: relative;
