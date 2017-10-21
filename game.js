@@ -10,7 +10,6 @@ var points = 0;
 
 var bgColor = "rgb(255,255,255)";
 
-
 function setup(){
   keyListener();
   initGrids();
@@ -25,10 +24,10 @@ function setup(){
 
 function keyListener(){
   window.addEventListener('keydown', function (e) {
-      if(e.keyCode == 37 && playGame){changeDir('left');} //left
-      else if(e.keyCode == 38 && playGame){changeDir('up');} //up
-      else if(e.keyCode == 39 && playGame){changeDir('right');} //right
-      else if(e.keyCode == 40 && playGame){changeDir('down');} //down
+      if(e.keyCode == 37 && playGame){if(snake.facing != 'right')changeDir('left');} //left
+      else if(e.keyCode == 38 && playGame){if(snake.facing != 'down')changeDir('up');} //up
+      else if(e.keyCode == 39 && playGame){if(snake.facing != 'left')changeDir('right');} //right
+      else if(e.keyCode == 40 && playGame){if(snake.facing != 'up')changeDir('down');} //down
       else if(e.keyCode == 32 && !playGame){restart();} //restart game
   })
 }
