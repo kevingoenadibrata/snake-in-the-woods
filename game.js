@@ -32,17 +32,10 @@ function setup(){
 
 function keyListener(){
   window.addEventListener('keydown', function (e) {
-<<<<<<< HEAD
       if(e.keyCode == 37 && snake.facing != 'right' && playGame){changeDir('left');} //left
       else if(e.keyCode == 38 && snake.facing != 'down' && playGame){changeDir('up');} //up
       else if(e.keyCode == 39 && snake.facing != 'left' && playGame){changeDir('right');} //right
       else if(e.keyCode == 40 && snake.facing != 'up' && playGame){changeDir('down');} //down
-=======
-      if(e.keyCode == 37 && playGame){if(snake.facing != 'right')changeDir('left');} //left
-      else if(e.keyCode == 38 && playGame){if(snake.facing != 'down')changeDir('up');} //up
-      else if(e.keyCode == 39 && playGame){if(snake.facing != 'left')changeDir('right');} //right
-      else if(e.keyCode == 40 && playGame){if(snake.facing != 'up')changeDir('down');} //down
->>>>>>> d20811224cce0775c6b76d0ceb03504a5b60e07a
       else if(e.keyCode == 32 && !playGame){restart();} //restart game
   })
 }
