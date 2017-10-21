@@ -1,5 +1,6 @@
 //Snake Object
 var snake = new Snake();
+
 function Snake(){
   //position
   this.x = 0;
@@ -14,6 +15,7 @@ function Snake(){
   this.facing = "up";
 
   this.snakeBody = [];
+
 }
 
 function SnakeBody(xID, yID){
@@ -31,4 +33,10 @@ function SnakeBody(xID, yID){
 //edit after defining grid ! TODO
 function addBody(snake){
   snake.snakeBody.push(new SnakeBody());
+}
+
+function deleteBody(snake){
+  for(var i = 0; i < snake.snakeBody.length - 1 ; i++){
+    snake.snakeBody.pop();
+  }
 }

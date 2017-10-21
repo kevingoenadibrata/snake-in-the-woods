@@ -17,6 +17,9 @@ body{
 }
 #points{
   position: absolute;
+  left: 10px;
+  top: 10px;
+  color: white;
 }
 canvas{
   width:640px;
