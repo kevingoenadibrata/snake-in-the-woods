@@ -14,6 +14,7 @@ var foodPresent = false;
 var g = 255;
 var points = 0;
 var gameSpeed = 100;
+var multi = 0.8;
 
 var bgColor = "rgb(255,255,255)";
 var defaultBgColor = "rgb(255,255,255)";
@@ -23,7 +24,7 @@ var b = 255;
 
 var snake = new Snake();
 
-var dayTime = true;
+var toDark = false;
 
 var keyInput = ['up'];
 
@@ -192,19 +193,40 @@ function setInput(face){
 }
 
 function darken(){
+  // if(points % 20 == 0){
+  //   toDark = !toDark;
+  // }
 
-  if(dayTime){
-    r = Math.floor(r * 0.9);
-    g = Math.floor(g * 0.9);
-    b = Math.floor(b * 0.9);
-    bgColor = "rgb(" + r + "," + g + "," + b + ")";
-    console.log(bgColor);
-  } else {
-    r = Math.floor(r * 1.8);
+  // if(toDark) multi = 0.9;
+  // else multi = 1.3
+  
+  // r = Math.floor(r * multi);
+  // if( r > 255){
+  //   r = 255;
+  // }
 
-    bgColor = "rgb(" + r + "," + r + "," + r + ")";
+  // if( r < 200 ) {
+  //   toDark = false;
+  //   multi = 1.3;
+  // }
+  // else if( r > 255 ){
+  //   r = 255;
+  //   toDark = true;
+  //   multi = 0.9;
+  // }
+
+  if( r >= 255){
+    multi = 0.8;
+  }
+  else if(r < 10){
+    multi = 1.4;
   }
 
+  r = Math.floor(r * multi);
+  if(r > 255) r = 255;
+  bgColor = "rgb(" + r + "," + r + "," + r + ")";
+  console.log(r);
+  console.log(bgColor);
   // document.getElementById("c").style.backgroundColor = bgColor;
 }
 
