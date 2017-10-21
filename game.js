@@ -11,6 +11,7 @@ var headImg = snakeUpImg;
 
 var playGame = true;
 var foodPresent = false;
+var g = 255;
 var points = 0;
 var gameSpeed = 100;
 
@@ -18,14 +19,15 @@ var bgColor = "rgb(255,255,255)";
 var defaultBgColor = "rgb(255,255,255)";
 
 var r = 255;
-var g = 255;
 var b = 255;
 
 var snake = new Snake();
 
+var dayTime = true;
+
+var keyInput = ['up'];
 
 function setup(){
-
   keyListener();
   initGrids();
   putFood();
@@ -39,10 +41,10 @@ function setup(){
 
 function keyListener(){
   window.addEventListener('keydown', function (e) {
-      if(e.keyCode == 37 && snake.facing != 'right' && playGame){changeDir('left');} //left
-      else if(e.keyCode == 38 && snake.facing != 'down' && playGame){changeDir('up');} //up
-      else if(e.keyCode == 39 && snake.facing != 'left' && playGame){changeDir('right');} //right
-      else if(e.keyCode == 40 && snake.facing != 'up' && playGame){changeDir('down');} //down
+      if(e.keyCode == 37 && snake.facing != 'right' && playGame){setInput('left');} //left
+      else if(e.keyCode == 38 && snake.facing != 'down' && playGame){setInput('up');} //up
+      else if(e.keyCode == 39 && snake.facing != 'left' && playGame){setInput('right');} //right
+      else if(e.keyCode == 40 && snake.facing != 'up' && playGame){setInput('down');} //down
       else if(e.keyCode == 32 && !playGame){restart();} //restart game
   })
 }
@@ -78,12 +80,20 @@ function restart(){
   points = 0;
   bgColor = defaultBgColor;
   putFood();
+  //reset color
+  r = 255;
+  g = 255;
+  b = 255;
   deleteBody(snake);
+  snake.snakeBody.push(new SnakeBody(snake.xID, snake.yID+1));
 }
 
 //mangan syek
 function update(){
-  if(playGame) move();
+  if(playGame){
+    changeDir();
+    move();
+  }
   if(snake.xID == food.xID && snake.yID == food.yID){
     addBody(snake);
     darken();
@@ -100,18 +110,22 @@ function move(){
   if(snake.facing == "left" && snake.xID - 1 >= 0 && playGame){
     dx = -1;
     snake.facing = "left";
+    playGame = checkBodyHit(snake.xID + dx, snake.yID + dy);
   }// left
   else if(snake.facing == "up" && snake.yID - 1 >= 0 && playGame){
     dy = -1;
     snake.facing = "up";
+    playGame = checkBodyHit(snake.xID + dx, snake.yID + dy);
   }// up
   else if(snake.facing == "right" && snake.xID + 1 < gridCount && playGame){
     dx = 1;
     snake.facing = "right";
+    playGame = checkBodyHit(snake.xID + dx, snake.yID + dy);
   }// right
   else if(snake.facing == "down" && snake.yID + 1 < gridCount && playGame){
     dy = 1;
     snake.facing = "down";
+    playGame = checkBodyHit(snake.xID + dx, snake.yID + dy);
   }//down
   else{
     //gameOver
@@ -130,8 +144,16 @@ function move(){
   }
 }
 
-function changeDir(face){
-  snake.facing = face;
+function changeDir(){
+  var nextMove;
+  if(keyInput.length != 0){
+    nextMove = keyInput.shift();
+  }
+  else{
+    nextMove = snake.facing;
+  }
+
+  snake.facing = nextMove;
   if(snake.facing == "left"){
     headImg = snakeLeftImg;
   }// left
@@ -146,11 +168,47 @@ function changeDir(face){
   }//down
 }
 
+function setInput(face){
+  if(face == 'left' || face == 'right'){
+    if(keyInput.length == 0){
+      if(snake.facing == 'up' || snake.facing == 'down'){
+        keyInput.push(face);
+      }
+    }
+    else if(keyInput[keyInput.length-1] == 'down' || keyInput[keyInput.length-1] == 'up' ){
+      keyInput.push(face);
+    }
+  }
+  else{
+    if(keyInput.length == 0){
+      if(snake.facing == 'left' || snake.facing == 'right'){
+        keyInput.push(face);
+      }
+    }
+    else if(keyInput[keyInput.length-1] == 'left' || keyInput[keyInput.length-1] == 'right' ){
+      keyInput.push(face);
+    }
+  }
+}
+
 function darken(){
-  r = Math.floor(r * 0.9);
-  g = Math.floor(g * 0.9);
-  b = Math.floor(b * 0.9);
-  bgColor = "rgb(" + r + "," + g + "," + b + ")";
-  console.log(bgColor);
+
+  if(dayTime){
+    r = Math.floor(r * 0.9);
+    g = Math.floor(g * 0.9);
+    b = Math.floor(b * 0.9);
+    bgColor = "rgb(" + r + "," + g + "," + b + ")";
+    console.log(bgColor);
+  } else {
+    r = Math.floor(r * 1.8);
+
+    bgColor = "rgb(" + r + "," + r + "," + r + ")";
+  }
+
   // document.getElementById("c").style.backgroundColor = bgColor;
+}
+
+function checkBodyHit(x, y){
+  if(!grids[x][y]) return false;
+  else return true;
 }

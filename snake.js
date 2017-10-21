@@ -36,7 +36,8 @@ function addBody(snake){
 }
 
 function deleteBody(snake){
-  for(var i = 0; i < snake.snakeBody.length - 1 ; i++){
-    snake.snakeBody.pop();
-  }
+  // for(var i = 0; i < snake.snakeBody.length - 1 ; i++){
+  //   var snek = snake.snakeBody[i];
+  // }
+  snake.snakeBody = [];
 }
