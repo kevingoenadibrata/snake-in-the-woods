@@ -10,8 +10,6 @@ function Snake(){
   this.xID = 0;
   this.yID = 0;
 
-  this.color = "rgb(0,0,0)";
-
   this.isInfected = false;
 
   this.facing = "up";

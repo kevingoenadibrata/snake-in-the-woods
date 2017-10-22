@@ -9,23 +9,27 @@ var snakeLeftImg = document.getElementById("snake-left-img");
 var snakeRightImg = document.getElementById("snake-right-img");
 var sushiImg = document.getElementById("sushi-img");
 var rotSushiImg = document.getElementById("rot-sushi-img");
+var powerupImg = document.getElementById("power-up-img");
+var mapImg = document.getElementById("map-img");
+var labelInf = document.getElementById("label-inf");
 
 var headImg = snakeUpImg;
 var foodImg = sushiImg;
 
 var rotIsPresent = false;
-
 var playGame = true;
 var foodPresent = false;
 var points = 0;
 var gameSpeed = 100;
 var multi = 0.8;
-var bounce = false;
 var timerDefault = 3;
 var timer = timerDefault;
+var checkPoint = 4;
 
-var bgColor = "rgb(255,255,255)";
-var defaultBgColor = "rgb(255,255,255)";
+var bgColor = "rgba(0,0,0,0)";
+var defaultBgColor = "rgba(0,0,0,0)";
+
+var counter = 1;
 
 var r = 255;
 var maxR = 255;
@@ -94,15 +98,17 @@ function setPos(object, xID, yID){
 }
 
 function render(){
-  ctx.fillStyle= "white";
-  ctx.fillRect(0,0,cnvs.width, cnvs.height);
+  ctx.drawImage(mapImg, 0, 0, cnvs.width, cnvs.height);
   ctx.fillStyle = bgColor;
   ctx.fillRect(0,0,cnvs.width, cnvs.height);
-  ctx.drawImage(foodImg, food.x, food.y, gridSize, gridSize)
-
+  ctx.drawImage(foodImg, food.x, food.y, gridSize, gridSize);
   ctx.drawImage(headImg, snake.x, snake.y, gridSize, gridSize);
+
+  if(powerUpPresent){
+    ctx.drawImage(powerupImg, powerUp.x, powerUp.y , gridSize, gridSize);
+  }
+
   for(var i = 0; i < snake.snakeBody.length; i++){
-    console.log("masuk kok");
     ctx.fillStyle = snake.snakeBody[i].color;
     ctx.fillRect(snake.snakeBody[i].x, snake.snakeBody[i].y, gridSize, gridSize);
   }
@@ -115,12 +121,19 @@ function restart(){
   changeDir('up');
   render();
   points = 0;
+  timer = timerDefault;
+  rotIsPresent = false;
+  powerUpPresent = false;
   bgColor = defaultBgColor;
+  render();
   putFood();
   //reset color
   r = 255;
   deleteBody(snake);
   snake.snakeBody.push(new SnakeBody(snake.xID, snake.yID+1));
+  food.isRot = 0;
+  snake.infected = 0;
+  labelInf.style.display = "none";
 }
 
 //mangan syek
@@ -129,11 +142,27 @@ function update(){
     changeDir();
     move();
   }
+
+  if(points == checkPoint){
+    if(!powerUpPresent && chance(0.5)){
+      putPowerUp();
+    }
+    checkPoint += 4;
+    console.log(checkPoint);
+  }
+  if(points > checkPoint) checkPoint += 4;
+
+  if(snake.xID == powerUp.xID && snake.yID == powerUp.yID){
+    r += 100;
+    powerUpPresent = false;
+    setPos(powerUp, -1, -1);
+    darken();
+  }
+
   if(snake.xID == food.xID && snake.yID == food.yID){
     if(rotIsPresent){
       timer = timerDefault;
       rotIsPresent = false;
-      console.log(food);
       snake.isInfected = true;
     }
     addBody(snake);
@@ -148,15 +177,18 @@ function update(){
   document.getElementById('brightness').innerHTML = brightness + "%";
 
   if(snake.isInfected){
-    document.getElementById('timer').style.display = "initial";
+    document.getElementById('timer').style.display = "block";
+    labelInf.innerHTML ="INFECTED!";
+    labelInf.style.display = "block";
     timer -= 0.1
     timer = timer.toFixed(1);
     document.getElementById('timer').innerHTML = timer;
-    document.getElementsByClassName('container')[0].style.backgroundColor = "rgb(24, 187, 74)";
+    document.getElementsByClassName('container')[0].style.backgroundColor = "#0a8341";
     if(timer <= 0){
       snake.isInfected = false;
       timer = timerDefault;
       document.getElementById('timer').style.display = "none";
+      labelInf.style.display = "none";
       document.getElementsByClassName('container')[0].style.backgroundColor = "rgb(55, 66, 77)";
     }
   }
@@ -189,7 +221,6 @@ function move(){
   else{
     //gameOver
     playGame = false;
-    //console.log('game over!');
   }
 
   if(playGame){
@@ -200,6 +231,18 @@ function move(){
     setPos(snake.snakeBody[0], snake.xID, snake.yID);
     setPos(snake, snake.xID+dx, snake.yID+dy);
     render();
+  }
+  else{
+    bgColor = defaultBgColor;
+    render();
+    document.getElementById('timer').style.display = "none";
+    labelInf.style.display = "none";
+
+    labelInf.innerHTML ="GAME OVER</br>Press SPACE to play again";
+    labelInf.style.display = "block";
+    snake.isInfected = false;
+    timer = timerDefault;
+    document.getElementsByClassName('container')[0].style.backgroundColor = "rgb(55, 66, 77)";
   }
 }
 
@@ -254,8 +297,6 @@ function darken(){
   r = Math.floor(r * 0.8);
   bgColor = "rgba(0,0,0," + (1-(r/255)).toFixed(2) + ")";
 
-  console.log(bgColor);
-  console.log(1-(r/255));
   // document.getElementById("c").style.backgroundColor = bgColor;
 }
 

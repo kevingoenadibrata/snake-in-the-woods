@@ -3,16 +3,29 @@
   <head>
     <title>Game Test</title>
     <link rel="stylesheet" type="text/css" href="main.css"/>
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
   </head>
 
   <body onload="setup()">
-    <h1 id= "points">0</h1>
-    <h1 id= "brightness">100%</h1>
-    <h1 id= "timer">0</h1>
-    <h1 id= "infected">-</h1>
+
+    <div class="infoBox">
+      <img src="img/logo.png" id="logo-img"/>
+      <div class="text"> Points </div>
+      <div class="points" id= "points">0</div>
+      <div class="text"> Brightness </div>
+      <div class="brightness" id= "brightness">100%</div>
+      <div class="text"> High Score </div>
+      <div class="brightness" id= "brightness">0</div>
+    </div>
+    <div class="timerBox">
+      <h1 id= "label-inf">INFECTED!</h1>
+      <h1 id= "timer">0</h1>
+    </div>
     <div class="container">
       <canvas id="c"></canvas>
     </div>
+
+
 
     <img src="img/snake-up.png" id="snake-up-img" style="display:none;"/>
     <img src="img/snake-down.png" id="snake-down-img" style="display:none;"/>
@@ -20,10 +33,13 @@
     <img src="img/snake-right.png" id="snake-right-img" style="display:none;"/>
     <img src="img/sushi.png" id="sushi-img" style="display:none;"/>
     <img src="img/rot-sushi.png" id="rot-sushi-img" style="display:none;"/>
+    <img src="img/map.png" id="map-img" style="display:none;"/>
+    <img src="img/powerup.png" id="power-up-img" style="display:none;"/>
+
 
     <script src="grids.js"> </script>
     <script src="food.js"> </script>
-    <script src="rottenfood.js"> </script>
+    <script src="powerup.js"> </script>
     <script src="snake.js"> </script>
     <script src="game.js"> </script>
 
