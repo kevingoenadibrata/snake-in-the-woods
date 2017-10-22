@@ -7,20 +7,28 @@ var snakeUpImg = document.getElementById("snake-up-img");
 var snakeDownImg = document.getElementById("snake-down-img");
 var snakeLeftImg = document.getElementById("snake-left-img");
 var snakeRightImg = document.getElementById("snake-right-img");
+var sushiImg = document.getElementById("sushi-img");
+var rotSushiImg = document.getElementById("rot-sushi-img");
+
 var headImg = snakeUpImg;
+var foodImg = sushiImg;
 
 var playGame = true;
 var foodPresent = false;
-var g = 255;
 var points = 0;
 var gameSpeed = 100;
 var multi = 0.8;
+var bounce = false;
+var timer = 3;
 
 var bgColor = "rgb(255,255,255)";
 var defaultBgColor = "rgb(255,255,255)";
 
 var r = 255;
-var b = 255;
+var maxR = 255;
+var minR = 150;
+var defaultR = 255;
+var bounceCount = 0;
 
 var snake = new Snake();
 
@@ -42,10 +50,34 @@ function setup(){
 
 function keyListener(){
   window.addEventListener('keydown', function (e) {
-      if(e.keyCode == 37 && snake.facing != 'right' && playGame){setInput('left');} //left
-      else if(e.keyCode == 38 && snake.facing != 'down' && playGame){setInput('up');} //up
-      else if(e.keyCode == 39 && snake.facing != 'left' && playGame){setInput('right');} //right
-      else if(e.keyCode == 40 && snake.facing != 'up' && playGame){setInput('down');} //down
+      if(e.keyCode == 37 && snake.facing != 'right' && playGame){
+        if(food.isRot){
+          setInput('right');
+        } else {
+          setInput('left');
+        }
+      } //left
+      else if(e.keyCode == 38 && snake.facing != 'down' && playGame){
+        if(food.isRot){
+          setInput('down');
+        } else {
+          setInput('up');
+        }
+      } //up
+      else if(e.keyCode == 39 && snake.facing != 'left' && playGame){
+        if(food.isRot){
+          setInput('left');
+        } else {
+          setInput('right');
+        }
+      } //right
+      else if(e.keyCode == 40 && snake.facing != 'up' && playGame){
+        if(food.isRot){
+          setInput('up');
+        } else {
+          setInput('down');
+        }
+      } //down
       else if(e.keyCode == 32 && !playGame){restart();} //restart game
   })
 }
@@ -58,12 +90,12 @@ function setPos(object, xID, yID){
 }
 
 function render(){
+  ctx.fillStyle= "white";
+  ctx.fillRect(0,0,cnvs.width, cnvs.height);  
   ctx.fillStyle = bgColor;
   ctx.fillRect(0,0,cnvs.width, cnvs.height);
-  ctx.fillStyle = food.color;
-  ctx.fillRect(food.x, food.y, gridSize, gridSize);
-  // ctx.fillStyle = snake.color;
-  // ctx.fillRect(snake.x, snake.y, gridSize, gridSize);
+  ctx.drawImage(foodImg, food.x, food.y, gridSize, gridSize)
+  
   ctx.drawImage(headImg, snake.x, snake.y, gridSize, gridSize);
   for(var i = 0; i < snake.snakeBody.length; i++){
     console.log("masuk kok");
@@ -83,25 +115,34 @@ function restart(){
   putFood();
   //reset color
   r = 255;
-  g = 255;
-  b = 255;
   deleteBody(snake);
   snake.snakeBody.push(new SnakeBody(snake.xID, snake.yID+1));
 }
 
 //mangan syek
 function update(){
+
+  if(timer == 0){
+    food.isRot = 0;
+  }
   if(playGame){
     changeDir();
     move();
   }
   if(snake.xID == food.xID && snake.yID == food.yID){
+    if(food.isRot) timer = 3; 
     addBody(snake);
     darken();
     putFood();
     points++;
   }
   document.getElementById('points').innerHTML = points;
+
+  var brightness = (r / defaultR * 100 );
+  brightness = brightness.toFixed(1);
+  document.getElementById('brightness').innerHTML = brightness + "%";
+
+  timer -= 0.1;
 }
 
 //direction
@@ -193,44 +234,19 @@ function setInput(face){
 }
 
 function darken(){
-  // if(points % 20 == 0){
-  //   toDark = !toDark;
-  // }
+  r = Math.floor(r * 0.8);
+  bgColor = "rgba(0,0,0," + (1-(r/255)).toFixed(2) + ")";
 
-  // if(toDark) multi = 0.9;
-  // else multi = 1.3
-  
-  // r = Math.floor(r * multi);
-  // if( r > 255){
-  //   r = 255;
-  // }
-
-  // if( r < 200 ) {
-  //   toDark = false;
-  //   multi = 1.3;
-  // }
-  // else if( r > 255 ){
-  //   r = 255;
-  //   toDark = true;
-  //   multi = 0.9;
-  // }
-
-  if( r >= 255){
-    multi = 0.8;
-  }
-  else if(r < 10){
-    multi = 1.4;
-  }
-
-  r = Math.floor(r * multi);
-  if(r > 255) r = 255;
-  bgColor = "rgb(" + r + "," + r + "," + r + ")";
-  console.log(r);
   console.log(bgColor);
+  console.log(1-(r/255));
   // document.getElementById("c").style.backgroundColor = bgColor;
 }
 
 function checkBodyHit(x, y){
   if(!grids[x][y]) return false;
   else return true;
+}
+
+function chance(x){
+  return Math.random() < x;
 }

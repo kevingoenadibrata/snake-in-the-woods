@@ -21,6 +21,13 @@ body{
   top: 10px;
   color: white;
 }
+
+#brightness{
+  position: absolute;
+  left: 10px;
+  top: 10vh;
+  color: white;
+}
 canvas{
   width:640px;
   height:640px;
