@@ -13,13 +13,16 @@ var rotSushiImg = document.getElementById("rot-sushi-img");
 var headImg = snakeUpImg;
 var foodImg = sushiImg;
 
+var rotIsPresent = false;
+
 var playGame = true;
 var foodPresent = false;
 var points = 0;
 var gameSpeed = 100;
 var multi = 0.8;
 var bounce = false;
-var timer = 3;
+var timerDefault = 3;
+var timer = timerDefault;
 
 var bgColor = "rgb(255,255,255)";
 var defaultBgColor = "rgb(255,255,255)";
@@ -51,34 +54,35 @@ function setup(){
 function keyListener(){
   window.addEventListener('keydown', function (e) {
       if(e.keyCode == 37 && snake.facing != 'right' && playGame){
-        if(food.isRot){
+        if(snake.isInfected){
           setInput('right');
         } else {
           setInput('left');
         }
       } //left
       else if(e.keyCode == 38 && snake.facing != 'down' && playGame){
-        if(food.isRot){
+        if(snake.isInfected){
           setInput('down');
         } else {
           setInput('up');
         }
       } //up
       else if(e.keyCode == 39 && snake.facing != 'left' && playGame){
-        if(food.isRot){
+        if(snake.isInfected){
           setInput('left');
         } else {
           setInput('right');
         }
       } //right
       else if(e.keyCode == 40 && snake.facing != 'up' && playGame){
-        if(food.isRot){
+        if(snake.isInfected){
           setInput('up');
         } else {
           setInput('down');
         }
       } //down
       else if(e.keyCode == 32 && !playGame){restart();} //restart game
+      else if(e.keyCode == 81 ){snake.isInfected = true;} //restart game
   })
 }
 
@@ -91,11 +95,11 @@ function setPos(object, xID, yID){
 
 function render(){
   ctx.fillStyle= "white";
-  ctx.fillRect(0,0,cnvs.width, cnvs.height);  
+  ctx.fillRect(0,0,cnvs.width, cnvs.height);
   ctx.fillStyle = bgColor;
   ctx.fillRect(0,0,cnvs.width, cnvs.height);
   ctx.drawImage(foodImg, food.x, food.y, gridSize, gridSize)
-  
+
   ctx.drawImage(headImg, snake.x, snake.y, gridSize, gridSize);
   for(var i = 0; i < snake.snakeBody.length; i++){
     console.log("masuk kok");
@@ -121,16 +125,17 @@ function restart(){
 
 //mangan syek
 function update(){
-
-  if(timer == 0){
-    food.isRot = 0;
-  }
   if(playGame){
     changeDir();
     move();
   }
   if(snake.xID == food.xID && snake.yID == food.yID){
-    if(food.isRot) timer = 3; 
+    if(rotIsPresent){
+      timer = timerDefault;
+      rotIsPresent = false;
+      console.log(food);
+      snake.isInfected = true;
+    }
     addBody(snake);
     darken();
     putFood();
@@ -142,7 +147,19 @@ function update(){
   brightness = brightness.toFixed(1);
   document.getElementById('brightness').innerHTML = brightness + "%";
 
-  timer -= 0.1;
+  if(snake.isInfected){
+    document.getElementById('timer').style.display = "initial";
+    timer -= 0.1
+    timer = timer.toFixed(1);
+    document.getElementById('timer').innerHTML = timer;
+    document.getElementsByClassName('container')[0].style.backgroundColor = "rgb(24, 187, 74)";
+    if(timer <= 0){
+      snake.isInfected = false;
+      timer = timerDefault;
+      document.getElementById('timer').style.display = "none";
+      document.getElementsByClassName('container')[0].style.backgroundColor = "rgb(55, 66, 77)";
+    }
+  }
 }
 
 //direction

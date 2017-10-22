@@ -21,10 +21,11 @@ function putFood(){
     yPos = Math.floor(Math.random() * gridCount);
   } while(!grids[xPos][yPos]);
   foodPresent = true;
-  
+
   if(chance(0.1)){
     foodImg = rotSushiImg;
     isRot = true;
+    rotIsPresent = true;
   }
   else {
     foodImg = sushiImg;

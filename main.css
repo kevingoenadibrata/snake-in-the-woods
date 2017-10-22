@@ -28,6 +28,20 @@ body{
   top: 10vh;
   color: white;
 }
+
+#timer{
+  position: absolute;
+  left: 10px;
+  top: 15vh;
+  color: white;
+}
+
+#infected{
+  position: absolute;
+  left: 10px;
+  top: 20vh;
+  color: white;
+}
 canvas{
   width:640px;
   height:640px;

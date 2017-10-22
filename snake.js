@@ -12,6 +12,8 @@ function Snake(){
 
   this.color = "rgb(0,0,0)";
 
+  this.isInfected = false;
+
   this.facing = "up";
 
   this.snakeBody = [];
