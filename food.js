@@ -22,7 +22,7 @@ function putFood(){
   } while(!grids[xPos][yPos]);
   foodPresent = true;
 
-  if(chance(0.1)){
+  if(chance(rotChance)){
     foodImg = rotSushiImg;
     isRot = true;
     rotIsPresent = true;

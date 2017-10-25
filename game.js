@@ -3,6 +3,8 @@
 var cnvs = document.getElementById("c");
 var ctx = cnvs.getContext('2d');
 
+var highScore = 0;
+
 var snakeUpImg = document.getElementById("snake-up-img");
 var snakeDownImg = document.getElementById("snake-down-img");
 var snakeLeftImg = document.getElementById("snake-left-img");
@@ -12,6 +14,9 @@ var rotSushiImg = document.getElementById("rot-sushi-img");
 var powerupImg = document.getElementById("power-up-img");
 var mapImg = document.getElementById("map-img");
 var labelInf = document.getElementById("label-inf");
+
+var rotChance = 0.1;
+var toggleRot = false;
 
 var headImg = snakeUpImg;
 var foodImg = sushiImg;
@@ -44,6 +49,8 @@ var toDark = false;
 var keyInput = ['up'];
 
 function setup(){
+  toggleRot = document.getElementById("toggleRot").checked;
+  checkCookie();
   keyListener();
   initGrids();
   putFood();
@@ -116,6 +123,10 @@ function render(){
 }
 
 function restart(){
+  toggleRot = document.getElementById("toggleRot").checked;
+  if(!toggleRot){
+    rotChance = 0;
+  }
   playGame = true;
   setPos(snake, 10, 10);
   changeDir('up');
@@ -138,9 +149,18 @@ function restart(){
 
 //mangan syek
 function update(){
+  if(!toggleRot){
+    rotChance = 0;
+  } else {
+    rotChance = 0.1;
+  }
+
   if(playGame){
     changeDir();
     move();
+    disableSwitch();
+  } else {
+    enableSwitch();
   }
 
   if(points == checkPoint){
@@ -148,7 +168,6 @@ function update(){
       putPowerUp();
     }
     checkPoint += 4;
-    console.log(checkPoint);
   }
   if(points > checkPoint) checkPoint += 4;
 
@@ -231,6 +250,7 @@ function move(){
     setPos(snake.snakeBody[0], snake.xID, snake.yID);
     setPos(snake, snake.xID+dx, snake.yID+dy);
     render();
+    disableSwitch();
   }
   else{
     bgColor = defaultBgColor;
@@ -243,6 +263,11 @@ function move(){
     snake.isInfected = false;
     timer = timerDefault;
     document.getElementsByClassName('container')[0].style.backgroundColor = "rgb(55, 66, 77)";
+    if(points > highScore) {
+      setCookie("highScore", points, 365);
+      highScore = points;
+      document.getElementById("highScore").innerHTML = highScore;
+    }
   }
 }
 
@@ -293,6 +318,40 @@ function setInput(face){
   }
 }
 
+
+function setCookie(cname, cvalue, exdays) {
+  var d = new Date();
+  d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+  var expires = "expires="+d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+  var name = cname + "=";
+  var ca = document.cookie.split(';');
+  for(var i = 0; i < ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') {
+          c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+          return c.substring(name.length, c.length);
+      }
+  }
+  return "";
+}
+
+function checkCookie() {
+  highScore = getCookie("highScore");
+  if (highScore != "") {
+    highScore = getCookie("highScore");
+  } else {
+    highScore = 0;
+    setCookie("highScore", 0, 365);
+  }
+  document.getElementById("highScore").innerHTML = highScore;
+}
+
 function darken(){
   r = Math.floor(r * 0.8);
   bgColor = "rgba(0,0,0," + (1-(r/255)).toFixed(2) + ")";
@@ -307,4 +366,13 @@ function checkBodyHit(x, y){
 
 function chance(x){
   return Math.random() < x;
+}
+
+function disableSwitch(){
+  document.getElementById("toggleRot").disabled = true;
+}
+
+function enableSwitch(){
+  console.log("ENABLED");
+  document.getElementById("toggleRot").disabled = false;
 }
